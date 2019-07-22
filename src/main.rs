@@ -10,7 +10,7 @@ use vec3::Vec3;
 fn color(r: Ray) -> Vec3 {
     let unit_direction = (r.direction).unit_vector();
     let t: f32 = 0.5 * (unit_direction.y + 1.0);
-    Vec3::new(1.0, 1.0, 1.0) * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t
+    (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(0.5, 0.7, 1.0)
 }
 
 fn main() {
@@ -31,7 +31,7 @@ fn main() {
             let u = i as f32 / nx as f32;
             let v = j as f32 / ny as f32;
 
-            let r = Ray::new(origin, lower_left_corner + horizontal * u + vertical * v);
+            let r = Ray::new(origin, lower_left_corner + u * horizontal + v * vertical);
 
             let col = color(r);
             let ir = (255.99 * col.x) as i32;
