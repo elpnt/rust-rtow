@@ -44,6 +44,11 @@ impl Vec3 {
             z: self.x * other.y - self.y * other.x,
         }
     }
+
+    // Normalize to a unit vector
+    pub fn unit_vector(&self) -> Vec3 {
+        *self / self.length()
+    }
 }
 
 impl Add for Vec3 {
