@@ -22,7 +22,7 @@ fn color(r: Ray) -> Vec3 {
     } else {
         let unit_direction = (r.direction).unit_vector();
         let t: f32 = 0.5 * (unit_direction.y + 1.0);
-        (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(0.5, 0.7, 1.0)
+        (1.0 - t) * vec3![1.0, 1.0, 1.0] + t * vec3![0.5, 0.7, 1.0]
     }
 }
 
@@ -34,10 +34,10 @@ fn main() {
     f.write_all(format!("P3\n{} {}\n255\n", nx, ny).as_bytes())
         .unwrap();
 
-    let lower_left_corner = Vec3::new(-2.0, -1.0, -1.0);
-    let horizontal = Vec3::new(4.0, 0.0, 0.0);
-    let vertical = Vec3::new(0.0, 2.0, 0.0);
-    let origin = Vec3::new(0.0, 0.0, 0.0);
+    let lower_left_corner = vec3![-2.0, -1.0, -1.0];
+    let horizontal = vec3![4.0, 0.0, 0.0];
+    let vertical = vec3![0.0, 2.0, 0.0];
+    let origin = vec3![0.0, 0.0, 0.0];
 
     for j in (0..ny).rev() {
         for i in 0..nx {
