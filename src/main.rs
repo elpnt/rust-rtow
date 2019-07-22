@@ -13,13 +13,11 @@ fn main() {
 
     for j in (0..ny).rev() {
         for i in 0..nx {
-            let r = i as f32 / nx as f32;
-            let g = j as f32 / ny as f32;
-            let b = 0.2f32;
+            let col = vec3::Vec3::new(i as f32 / nx as f32, j as f32 / ny as f32, 0.2f32);
 
-            let ir = (255.99 * r) as i32;
-            let ig = (255.99 * g) as i32;
-            let ib = (255.99 * b) as i32;
+            let ir = (255.99 * col.x) as i32;
+            let ig = (255.99 * col.y) as i32;
+            let ib = (255.99 * col.z) as i32;
 
             f.write(format!("{} {} {}\n", ir, ig, ib).as_bytes())
                 .unwrap();
