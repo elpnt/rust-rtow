@@ -7,18 +7,24 @@ mod vec3;
 use ray::Ray;
 use vec3::Vec3;
 
-fn hit_sphere(center: Vec3, radius: f32, r: Ray) -> bool {
+fn hit_sphere(center: Vec3, radius: f32, r: Ray) -> f32 {
     let oc: Vec3 = r.origin - center;
-    let a = r.direction.dot(&r.direction);
-    let b = 2.0 * oc.dot(&r.direction);
-    let c = oc.dot(&oc) - radius * radius;
-    let discriminant = b * b - 4.0 * a * c;
-    discriminant > 0.0
+    let a: f32 = r.direction.dot(&r.direction);
+    let b: f32 = 2.0 * oc.dot(&r.direction);
+    let c: f32 = oc.dot(&oc) - radius * radius;
+    let discriminant: f32 = b * b - 4.0 * a * c;
+    if discriminant < 0.0 {
+        -1.0
+    } else {
+        -b - discriminant.sqrt() / (2.0 * a)
+    }
 }
 
 fn color(r: Ray) -> Vec3 {
-    if hit_sphere(vec3![0.0, 0.0, -1.0], 0.5, r) {
-        vec3![1.0, 0.0, 0.0]
+    let t: f32 = hit_sphere(vec3![0.0, 0.0, -1.0], 0.5, r);
+    if t > 0.0 {
+        let normal: Vec3 = (r.point_at_parameter(t) - vec3![0.0, 0.0, -1.0]).unit_vector();
+        0.5 * vec3![normal.x + 1., normal.y + 1., normal.z + 1.]
     } else {
         let unit_direction = (r.direction).unit_vector();
         let t: f32 = 0.5 * (unit_direction.y + 1.0);
@@ -30,7 +36,7 @@ fn main() {
     let nx: u32 = 200;
     let ny: u32 = 100;
 
-    let mut f = BufWriter::new(fs::File::create("image/ch4-sphere.ppm").unwrap());
+    let mut f = BufWriter::new(fs::File::create("image/ch5-sphere.ppm").unwrap());
     f.write_all(format!("P3\n{} {}\n255\n", nx, ny).as_bytes())
         .unwrap();
 
