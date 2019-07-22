@@ -1,11 +1,13 @@
 use std::fs;
 use std::io::{BufWriter, Write};
 
+mod vec3;
+
 fn main() {
     let nx: u32 = 200;
     let ny: u32 = 100;
 
-    let mut f = BufWriter::new(fs::File::create("result.ppm").unwrap());
+    let mut f = BufWriter::new(fs::File::create("image/result.ppm").unwrap());
     f.write_all(format!("P3\n{} {}\n255\n", nx, ny).as_bytes())
         .unwrap();
 
