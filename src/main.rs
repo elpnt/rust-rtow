@@ -33,13 +33,8 @@ fn main() {
         for i in 0..nx {
             let u = i as f32 / nx as f32;
             let v = j as f32 / ny as f32;
+
             let r = Ray::new(origin, lower_left_corner + horizontal * u + vertical * v);
-            /*
-            let r = Ray {
-                origin: origin,
-                direction: lower_left_corner + horizontal * u + vertical * v,
-            };
-            */
 
             let col = color(r);
             let ir = (255.99 * col.x) as i32;
