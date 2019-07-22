@@ -10,9 +10,6 @@ use vec3::Vec3;
 fn color(r: Ray) -> Vec3 {
     let unit_direction = (r.direction).unit_vector();
     let t: f32 = 0.5 * (unit_direction.y + 1.0);
-    // 以下は the trait `std::ops::Mul<vec3::Vec3>` is not implemented for `f32`
-    // としてコンパイルエラーになってしまう
-    // (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(1.0, 1.0, 1.0)
     Vec3::new(1.0, 1.0, 1.0) * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t
 }
 
