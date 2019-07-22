@@ -7,6 +7,17 @@ pub struct Vec3 {
     pub z: f32,
 }
 
+#[macro_export]
+macro_rules! vec3 {
+    ( $x:expr, $y:expr, $z:expr ) => {
+        Vec3 {
+            x: $x,
+            y: $y,
+            z: $z,
+        }
+    };
+}
+
 impl Vec3 {
     // Make new Vecor
     pub fn new(x: f32, y: f32, z: f32) -> Vec3 {
@@ -127,6 +138,17 @@ impl Neg for Vec3 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn make_vec_by_macro() {
+        let v1 = vec3![1.0, 2.0, 4.0];
+        let v2 = Vec3 {
+            x: 1.0,
+            y: 2.0,
+            z: 4.0,
+        };
+        assert_eq!(v1, v2);
+    }
 
     #[test]
     fn new_vec() {
