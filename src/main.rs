@@ -7,17 +7,30 @@ mod vec3;
 use ray::Ray;
 use vec3::Vec3;
 
+fn hit_sphere(center: Vec3, radius: f32, r: Ray) -> bool {
+    let oc: Vec3 = r.origin - center;
+    let a = r.direction.dot(&r.direction);
+    let b = 2.0 * oc.dot(&r.direction);
+    let c = oc.dot(&oc) - radius * radius;
+    let discriminant = b * b - 4.0 * a * c;
+    discriminant > 0.0
+}
+
 fn color(r: Ray) -> Vec3 {
-    let unit_direction = (r.direction).unit_vector();
-    let t: f32 = 0.5 * (unit_direction.y + 1.0);
-    (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(0.5, 0.7, 1.0)
+    if hit_sphere(vec3![0.0, 0.0, -1.0], 0.5, r) {
+        vec3![1.0, 0.0, 0.0]
+    } else {
+        let unit_direction = (r.direction).unit_vector();
+        let t: f32 = 0.5 * (unit_direction.y + 1.0);
+        (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(0.5, 0.7, 1.0)
+    }
 }
 
 fn main() {
     let nx: u32 = 200;
     let ny: u32 = 100;
 
-    let mut f = BufWriter::new(fs::File::create("image/ch3-ray.ppm").unwrap());
+    let mut f = BufWriter::new(fs::File::create("image/ch4-sphere.ppm").unwrap());
     f.write_all(format!("P3\n{} {}\n255\n", nx, ny).as_bytes())
         .unwrap();
 
