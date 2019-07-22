@@ -8,6 +8,7 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
+    // Make new Vecor
     pub fn new(x: f32, y: f32, z: f32) -> Vec3 {
         Vec3 { x, y, z }
     }
@@ -44,6 +45,11 @@ impl Vec3 {
             z: self.x * other.y - self.y * other.x,
         }
     }
+
+    // Normalize to a unit vector
+    pub fn unit_vector(&self) -> Vec3 {
+        *self / self.length()
+    }
 }
 
 impl Add for Vec3 {
@@ -61,7 +67,7 @@ impl Add for Vec3 {
 impl Sub for Vec3 {
     type Output = Vec3;
 
-    fn sub(self, other: Vec3) -> Self {
+    fn sub(self, other: Vec3) -> Self::Output {
         Vec3 {
             x: self.x - other.x,
             y: self.y - other.y,
@@ -73,7 +79,7 @@ impl Sub for Vec3 {
 impl Mul<f32> for Vec3 {
     type Output = Vec3;
 
-    fn mul(self, coef: f32) -> Self {
+    fn mul(self, coef: f32) -> Self::Output {
         Vec3 {
             x: self.x * coef,
             y: self.y * coef,
@@ -85,7 +91,7 @@ impl Mul<f32> for Vec3 {
 impl Div<f32> for Vec3 {
     type Output = Vec3;
 
-    fn div(self, coef: f32) -> Self {
+    fn div(self, coef: f32) -> Self::Output {
         Vec3 {
             x: self.x / coef,
             y: self.y / coef,
@@ -111,7 +117,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn get_new_vec() {
+    fn new_vec() {
         let v1 = Vec3::new(1.0, 2.0, 3.0);
         let v2 = Vec3 {
             x: 1.0,
@@ -122,19 +128,19 @@ mod tests {
     }
 
     #[test]
-    fn get_vec_length() {
+    fn vec_length() {
         let v = Vec3::new(0.0, 3.0, 4.0);
         assert_eq!(v.length(), 5.0);
     }
 
     #[test]
-    fn get_veg_squared_length() {
+    fn veg_squared_length() {
         let v = Vec3::new(1.0, 2.0, 3.0);
         assert_eq!(v.squared_length(), 14.0);
     }
 
     #[test]
-    fn get_unit_vector() {
+    fn unit_vector() {
         let v1 = Vec3 {
             x: 1.0,
             y: 1.0,
@@ -145,18 +151,24 @@ mod tests {
     }
 
     #[test]
-    fn get_inner_product() {
+    fn inner_product() {
         let v1 = Vec3::new(1.0, 2.0, 3.0);
         let v2 = Vec3::new(4.0, 5.0, 6.0);
         assert_eq!(v1.dot(&v2), 32.0);
     }
 
     #[test]
-    fn get_cross_product() {
+    fn cross_product() {
         let v1 = Vec3::new(1.0, 2.0, 3.0);
         let v2 = Vec3::new(4.0, 5.0, 6.0);
         let v_expected = Vec3::new(-3.0, 6.0, -3.0);
         assert_eq!(v1.cross(&v2), v_expected);
+    }
+
+    #[test]
+    fn normalize_vector() {
+        let v1 = Vec3::new(3.0, 0.0, 4.0);
+        assert_eq!(v1.unit_vector(), Vec3::new(0.6, 0.0, 0.8));
     }
 
     #[test]
