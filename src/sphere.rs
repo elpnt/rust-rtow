@@ -1,11 +1,16 @@
 use crate::hitable::{HitRecord, Hitable};
+use crate::material::Material;
 use crate::ray::Ray;
 use crate::vec3::Vec3;
 
-#[derive(Debug, Clone, Copy)]
+use std::borrow::Borrow;
+use std::sync::Arc;
+
+// #[derive(Debug, Clone, Copy)]
 pub struct Sphere {
     pub center: Vec3,
     pub radius: f32,
+    pub material: Arc<Material>,
 }
 
 impl Hitable for Sphere {
@@ -18,7 +23,6 @@ impl Hitable for Sphere {
 
         if discriminant > 0. {
             // ray crosses the sphere at least once
-
             let temp1: f32 = (-b - discriminant.sqrt()) / a;
             let temp2: f32 = (-b + discriminant.sqrt()) / a;
             let b1: bool = t_max > temp1 && temp1 > t_min;
@@ -29,29 +33,15 @@ impl Hitable for Sphere {
                 let t: f32 = if b1 { temp1 } else { temp2 };
                 let p: Vec3 = r.point_at_parameter(t);
                 let normal: Vec3 = (p - self.center) / self.radius;
-                Some(HitRecord { t, p, normal })
+                Some(HitRecord {
+                    t,
+                    p,
+                    normal,
+                    material: self.material.borrow(),
+                })
             } else {
                 None
             }
-        /* too redundant!!
-        let mut temp: f32 = (-b - discriminant.sqrt()) / a;
-        if temp < t_max && temp > t_min {
-            let t = temp;
-            let p = r.point_at_parameter(t);
-            let normal = (p - self.center) / self.radius;
-            Some(HitRecord { t, p, normal })
-        } else {
-            temp = (-b + discriminant.sqrt()) / a;
-            if temp < t_max && temp > t_min {
-                let t = temp;
-                let p = r.point_at_parameter(t);
-                let normal = (p - self.center) / self.radius;
-                Some(HitRecord { t, p, normal })
-            } else {
-                None
-            }
-        }
-        */
         } else {
             // ray never crosses the sphere
             None
@@ -68,6 +58,7 @@ mod tests {
         let sp = Sphere {
             center: Vec3::new(0.0, 0.0, 0.0),
             radius: 1.0,
+            material,
         };
         let r = Ray {
             origin: Vec3::new(0.0, 0.0, 10.0),
