@@ -1,8 +1,11 @@
 use crate::hitable::{HitRecord, Hitable};
 use crate::ray::Ray;
+use crate::sphere::Sphere;
+use std::sync::Arc;
 
 pub struct HitableList {
-    pub hitables: Vec<Box<dyn Hitable + 'static>>,
+    // pub hitables: Vec<Box<dyn Hitable + 'static>>,
+    pub hitables: Vec<Arc<Sphere>>,
 }
 
 impl Hitable for HitableList {
