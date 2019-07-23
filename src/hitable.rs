@@ -1,14 +1,13 @@
 use crate::ray::Ray;
 use crate::vec3::Vec3;
 
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub struct HitRecord {
-    t: f32,
-    p: Vec3,
-    normal: Vec3,
+    pub t: f32,
+    pub p: Vec3,
+    pub normal: Vec3,
 }
 
-impl HitRecord {
-    pub fn hit(&self, r: Ray, t_min: f32, t_max: f32) -> bool {
-        unimplemented!();
-    }
+pub trait Hitable {
+    fn hit(&self, r: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord>;
 }
