@@ -18,11 +18,11 @@ use vec3::Vec3;
 
 fn color(r: &Ray, world: &HitableList) -> Vec3 {
     if let Some(rec) = world.hit(&r, 0.0, std::f32::MAX) {
-        0.5 * vec3![rec.normal.x + 1.0, rec.normal.y + 1.0, rec.normal.z + 1.0]
+        0.5 * Vec3::new(rec.normal.x + 1.0, rec.normal.y + 1.0, rec.normal.z + 1.0)
     } else {
         let unit_direction: Vec3 = r.direction.unit_vector();
         let t: f32 = 0.5 * (unit_direction.y + 1.0);
-        (1.0 - t) * vec3![1.0, 1.0, 1.0] + t * vec3![0.5, 0.7, 1.0]
+        (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(0.5, 0.7, 1.0)
     }
 }
 
@@ -40,8 +40,8 @@ fn main() {
         .unwrap();
 
     let hitables = vec![
-        create_sphere(vec3![0.0, 0.0, -1.0], 0.5),
-        create_sphere(vec3![0.0, -100.5, -1.0], 100.0),
+        create_sphere(Vec3::new(0.0, 0.0, -1.0), 0.5),
+        create_sphere(Vec3::new(0.0, -100.5, -1.0), 100.0),
     ];
     let world = HitableList { hitables };
     let cam: Camera = Default::default();
