@@ -40,11 +40,11 @@ fn color(r: &Ray, world: &HitableList, depth: u32) -> Vec3 {
 }
 
 fn main() {
-    let nx: u32 = 400;
-    let ny: u32 = 200;
+    let nx: u32 = 800;
+    let ny: u32 = 400;
     let ns: u32 = 100; // number of samples inside each pixel
 
-    let mut f = BufWriter::new(fs::File::create("image/ch8-material.ppm").unwrap());
+    let mut f = BufWriter::new(fs::File::create("image/ch8-material-fuzziness.ppm").unwrap());
     f.write_all(format!("P3\n{} {}\n255\n", nx, ny).as_bytes())
         .unwrap();
 
@@ -60,7 +60,7 @@ fn main() {
             center: Vec3::new(0.0, -100.5, -1.0),
             radius: 100.0,
             material: Arc::new(Lambertian {
-                albedo: Vec3::new(0.8, 0.8, 0.8),
+                albedo: Vec3::new(0.8, 0.8, 0.0),
             }),
         }),
         Arc::new(Sphere {
@@ -68,6 +68,7 @@ fn main() {
             radius: 0.5,
             material: Arc::new(Metal {
                 albedo: Vec3::new(0.8, 0.6, 0.2),
+                fuzz: 0.3,
             }),
         }),
         Arc::new(Sphere {
@@ -75,6 +76,7 @@ fn main() {
             radius: 0.5,
             material: Arc::new(Metal {
                 albedo: Vec3::new(0.8, 0.8, 0.8),
+                fuzz: 1.0,
             }),
         }),
     ];
