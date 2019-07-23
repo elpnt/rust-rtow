@@ -16,9 +16,26 @@ use ray::Ray;
 use sphere::Sphere;
 use vec3::Vec3;
 
+fn random_in_unit_sphere() -> Vec3 {
+    let mut rng = rand::thread_rng();
+    let mut p = Vec3::make_unit_vector();
+    while p.squared_length() > 1.0 {
+        p = 2.0 * Vec3::new(rng.gen::<f32>(), rng.gen::<f32>(), rng.gen::<f32>())
+            - Vec3::new(1.0, 1.0, 1.0);
+    }
+    p
+}
+
 fn color(r: &Ray, world: &HitableList) -> Vec3 {
-    if let Some(rec) = world.hit(&r, 0.0, std::f32::MAX) {
-        0.5 * Vec3::new(rec.normal.x + 1.0, rec.normal.y + 1.0, rec.normal.z + 1.0)
+    if let Some(rec) = world.hit(&r, 0.001, std::f32::MAX) {
+        let target: Vec3 = rec.p + rec.normal + random_in_unit_sphere();
+        0.5 * color(
+            &Ray {
+                origin: rec.p,
+                direction: target - rec.p,
+            },
+            &world,
+        )
     } else {
         let unit_direction: Vec3 = r.direction.unit_vector();
         let t: f32 = 0.5 * (unit_direction.y + 1.0);
@@ -35,7 +52,7 @@ fn main() {
     let ny: u32 = 400;
     let ns: u32 = 100; // number of samples inside each pixel
 
-    let mut f = BufWriter::new(fs::File::create("image/ch6-antialiasing.ppm").unwrap());
+    let mut f = BufWriter::new(fs::File::create("image/ch7-diffuse3.ppm").unwrap());
     f.write_all(format!("P3\n{} {}\n255\n", nx, ny).as_bytes())
         .unwrap();
 
@@ -57,11 +74,11 @@ fn main() {
                 let u = (i as f32 + ru) / nx as f32;
                 let v = (j as f32 + rv) / ny as f32;
                 let r: Ray = cam.get_ray(u, v);
-                // let p: Vec3 = r.point_at_parameter(2.0);
                 col += color(&r, &world);
             }
 
             col /= ns as f32;
+            col = Vec3::new(col.x.sqrt(), col.y.sqrt(), col.z.sqrt());
             let ir = (255.99 * col.x) as i32;
             let ig = (255.99 * col.y) as i32;
             let ib = (255.99 * col.z) as i32;
