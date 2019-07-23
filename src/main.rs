@@ -16,7 +16,7 @@ fn hit_sphere(center: Vec3, radius: f32, r: Ray) -> f32 {
     if discriminant < 0.0 {
         -1.0
     } else {
-        -b - discriminant.sqrt() / (2.0 * a)
+        (-b - discriminant.sqrt()) / (2.0 * a)
     }
 }
 
@@ -33,8 +33,8 @@ fn color(r: Ray) -> Vec3 {
 }
 
 fn main() {
-    let nx: u32 = 200;
-    let ny: u32 = 100;
+    let nx: u32 = 400;
+    let ny: u32 = 200;
 
     let mut f = BufWriter::new(fs::File::create("image/ch5-sphere.ppm").unwrap());
     f.write_all(format!("P3\n{} {}\n255\n", nx, ny).as_bytes())
