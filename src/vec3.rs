@@ -1,6 +1,7 @@
 use std::ops::{Add, Div, Mul, Neg, Sub};
+use std::ops::{AddAssign, DivAssign};
 
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, Default, PartialEq, Copy, Clone)]
 pub struct Vec3 {
     pub x: f32,
     pub y: f32,
@@ -66,12 +67,22 @@ impl Vec3 {
 impl Add for Vec3 {
     type Output = Vec3;
 
-    fn add(self, other: Vec3) -> Self {
+    fn add(self, other: Vec3) -> Self::Output {
         Vec3 {
             x: self.x + other.x,
             y: self.y + other.y,
             z: self.z + other.z,
         }
+    }
+}
+
+impl AddAssign for Vec3 {
+    fn add_assign(&mut self, other: Self) {
+        *self = Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+        };
     }
 }
 
@@ -120,6 +131,16 @@ impl Div<f32> for Vec3 {
             y: self.y / coef,
             z: self.z / coef,
         }
+    }
+}
+
+impl DivAssign<f32> for Vec3 {
+    fn div_assign(&mut self, coef: f32) {
+        *self = Self {
+            x: self.x / coef,
+            y: self.y / coef,
+            z: self.z / coef,
+        };
     }
 }
 
@@ -214,6 +235,15 @@ mod tests {
     }
 
     #[test]
+    fn v_add_assign() {
+        let mut v1 = Vec3::new(1.0, 2.0, 3.0);
+        let v2 = Vec3::new(4.0, 5.0, 6.0);
+        let v_expected = Vec3::new(5.0, 7.0, 9.0);
+        v1 += v2;
+        assert_eq!(v1, v_expected);
+    }
+
+    #[test]
     fn v_sub() {
         let v1 = Vec3::new(1.0, 2.0, 3.0);
         let v2 = Vec3::new(4.0, 5.0, 6.0);
@@ -235,6 +265,15 @@ mod tests {
         let a: f32 = 3.0;
         let v_expected = Vec3::new(1.0, 2.0, 3.0);
         assert_eq!(v / a, v_expected);
+    }
+
+    #[test]
+    fn v_div_assign() {
+        let mut v = Vec3::new(3.0, 6.0, 9.0);
+        let a: f32 = 3.0;
+        v /= a;
+        let v_expected = Vec3::new(1.0, 2.0, 3.0);
+        assert_eq!(v, v_expected);
     }
 
     #[test]
