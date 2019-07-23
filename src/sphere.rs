@@ -62,25 +62,24 @@ impl Hitable for Sphere {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::vec3;
 
     #[test]
     fn hit() {
         let sp = Sphere {
-            center: vec3![0.0, 0.0, 0.0],
+            center: Vec3::new(0.0, 0.0, 0.0),
             radius: 1.0,
         };
         let r = Ray {
-            origin: vec3![0.0, 0.0, 10.0],
-            direction: vec3![0.0, 0.0, -1.0],
+            origin: Vec3::new(0.0, 0.0, 10.0),
+            direction: Vec3::new(0.0, 0.0, -1.0),
         };
         let t_min: f32 = 0.0;
         let t_max: f32 = std::f32::MAX;
 
         // expected hitrecord's parameter derived analytically
         let t: f32 = 9.0;
-        let p: Vec3 = vec3![0.0, 0.0, 1.0];
-        let normal: Vec3 = vec3![0.0, 0.0, 1.0];
+        let p: Vec3 = Vec3::new(0.0, 0.0, 1.0);
+        let normal: Vec3 = Vec3::new(0.0, 0.0, 1.0);
 
         let maybe_hit: Option<HitRecord> = sp.hit(&r, t_min, t_max);
         assert_eq!(maybe_hit.unwrap(), HitRecord { t, p, normal });
@@ -89,12 +88,12 @@ mod tests {
     #[test]
     fn not_hit() {
         let sp = Sphere {
-            center: vec3![0.0, 0.0, 0.0],
+            center: Vec3::new(0.0, 0.0, 0.0),
             radius: 1.0,
         };
         let r = Ray {
-            origin: vec3![0.0, 0.0, 10.0],
-            direction: vec3![0.0, 1.0, 0.0],
+            origin: Vec3::new(0.0, 0.0, 10.0),
+            direction: Vec3::new(0.0, 1.0, 0.0),
         };
         let t_min: f32 = 0.0;
         let t_max: f32 = std::f32::MAX;
