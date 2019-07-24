@@ -1,4 +1,5 @@
 use rand;
+use std::f32::consts::PI;
 use std::fs;
 use std::io::{BufWriter, Write};
 use std::sync::Arc;
@@ -44,7 +45,7 @@ fn main() {
     let ny: u32 = 400;
     let ns: u32 = 50; // number of samples inside each pixel
 
-    let mut f = BufWriter::new(fs::File::create("image/ch8-dielectric.ppm").unwrap());
+    let mut f = BufWriter::new(fs::File::create("image/ch9-camera2.ppm").unwrap());
     f.write_all(format!("P3\n{} {}\n255\n", nx, ny).as_bytes())
         .unwrap();
 
@@ -53,7 +54,7 @@ fn main() {
             center: Vec3::new(0.0, 0.0, -1.0),
             radius: 0.5,
             material: Arc::new(Lambertian {
-                albedo: Vec3::new(0.8, 0.3, 0.3),
+                albedo: Vec3::new(0.1, 0.2, 0.5),
             }),
         }),
         Arc::new(Sphere {
@@ -83,7 +84,13 @@ fn main() {
         }),
     ];
     let world = HitableList { hitables };
-    let cam: Camera = Default::default();
+    let cam = Camera::new(
+        Vec3::new(-1.0, 1.0, 0.5),
+        Vec3::new(0.0, 0.0, -1.0),
+        Vec3::new(0.0, 1.0, 0.0),
+        90.0,
+        nx as f32 / ny as f32,
+    );
 
     for j in (0..ny).rev() {
         for i in 0..nx {
