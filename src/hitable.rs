@@ -2,7 +2,6 @@ use crate::material::Material;
 use crate::ray::Ray;
 use crate::vec3::Vec3;
 
-// #[derive(Debug, PartialEq, Clone, Copy)]
 #[derive(Clone, Copy)]
 pub struct HitRecord<'a> {
     pub t: f32,

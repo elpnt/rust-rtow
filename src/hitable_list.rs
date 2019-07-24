@@ -3,7 +3,6 @@ use crate::ray::Ray;
 use std::sync::Arc;
 
 pub struct HitableList {
-    // pub hitables: Vec<Box<dyn Hitable + 'static>>,
     pub hitables: Vec<Arc<Hitable>>,
 }
 
