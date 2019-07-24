@@ -1,5 +1,4 @@
 use rand;
-use std::f32::consts::PI;
 use std::fs;
 use std::io::{BufWriter, Write};
 use std::sync::Arc;
@@ -41,14 +40,15 @@ fn color(r: &Ray, world: &HitableList, depth: u32) -> Vec3 {
 }
 
 fn main() {
-    let nx: u32 = 800;
-    let ny: u32 = 400;
+    let nx: u32 = 400;
+    let ny: u32 = 200;
     let ns: u32 = 50; // number of samples inside each pixel
 
-    let mut f = BufWriter::new(fs::File::create("image/ch9-camera2.ppm").unwrap());
+    let mut f = BufWriter::new(fs::File::create("image/ch11-aperture.ppm").unwrap());
     f.write_all(format!("P3\n{} {}\n255\n", nx, ny).as_bytes())
         .unwrap();
 
+    // Objects setup
     let hitables = vec![
         Arc::new(Sphere {
             center: Vec3::new(0.0, 0.0, -1.0),
@@ -84,12 +84,20 @@ fn main() {
         }),
     ];
     let world = HitableList { hitables };
+
+    // Camera setup
+    let lookfrom: Vec3 = Vec3::new(3.0, 3.0, 2.0);
+    let lookat: Vec3 = Vec3::new(0.0, 0.0, -1.0);
+    let dist_to_focus: f32 = (lookfrom - lookat).length();
+    let aperture: f32 = 1.0;
     let cam = Camera::new(
-        Vec3::new(-1.0, 1.0, 0.5),
-        Vec3::new(0.0, 0.0, -1.0),
+        lookfrom,
+        lookat,
         Vec3::new(0.0, 1.0, 0.0),
-        90.0,
+        20.0,
         nx as f32 / ny as f32,
+        aperture,
+        dist_to_focus,
     );
 
     for j in (0..ny).rev() {
