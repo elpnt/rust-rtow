@@ -1,6 +1,5 @@
 use crate::hitable::{HitRecord, Hitable};
 use crate::ray::Ray;
-use crate::sphere::Sphere;
 use std::sync::Arc;
 
 pub struct HitableList {
