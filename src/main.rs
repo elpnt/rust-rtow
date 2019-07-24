@@ -1,22 +1,20 @@
 use rand;
 use std::fs;
 use std::io::{BufWriter, Write};
-use std::sync::Arc;
 
 mod camera;
 mod hitable;
 mod hitable_list;
 mod material;
 mod ray;
+mod scene;
 mod sphere;
 mod vec3;
 
 use camera::Camera;
 use hitable::Hitable;
 use hitable_list::HitableList;
-use material::*;
 use ray::Ray;
-use sphere::Sphere;
 use vec3::Vec3;
 
 fn color(r: &Ray, world: &HitableList, depth: u32) -> Vec3 {
@@ -40,65 +38,26 @@ fn color(r: &Ray, world: &HitableList, depth: u32) -> Vec3 {
 }
 
 fn main() {
-    let nx: u32 = 400;
-    let ny: u32 = 200;
-    let ns: u32 = 50; // number of samples inside each pixel
+    let nx: u32 = 640;
+    let ny: u32 = 480;
+    let ns: u32 = 40; // number of samples inside each pixel
 
-    let mut f = BufWriter::new(fs::File::create("image/ch11-aperture.ppm").unwrap());
+    let mut f = BufWriter::new(fs::File::create("image/ch12-random-spheres.ppm").unwrap());
     f.write_all(format!("P3\n{} {}\n255\n", nx, ny).as_bytes())
         .unwrap();
 
     // Objects setup
-    let hitables = vec![
-        Arc::new(Sphere {
-            center: Vec3::new(0.0, 0.0, -1.0),
-            radius: 0.5,
-            material: Arc::new(Lambertian {
-                albedo: Vec3::new(0.1, 0.2, 0.5),
-            }),
-        }),
-        Arc::new(Sphere {
-            center: Vec3::new(0.0, -100.5, -1.0),
-            radius: 100.0,
-            material: Arc::new(Lambertian {
-                albedo: Vec3::new(0.8, 0.8, 0.0),
-            }),
-        }),
-        Arc::new(Sphere {
-            center: Vec3::new(1.0, 0.0, -1.0),
-            radius: 0.5,
-            material: Arc::new(Metal {
-                albedo: Vec3::new(0.8, 0.6, 0.2),
-                fuzz: 0.3,
-            }),
-        }),
-        Arc::new(Sphere {
-            center: Vec3::new(-1.0, 0.0, -1.0),
-            radius: 0.5,
-            material: Arc::new(Dielectric { refract_idx: 1.5 }),
-        }),
-        Arc::new(Sphere {
-            center: Vec3::new(-1.0, 0.0, -1.0),
-            radius: -0.45,
-            material: Arc::new(Dielectric { refract_idx: 1.5 }),
-        }),
-    ];
-    let world = HitableList { hitables };
+    let world = scene::random_scene();
 
     // Camera setup
-    let lookfrom: Vec3 = Vec3::new(3.0, 3.0, 2.0);
-    let lookat: Vec3 = Vec3::new(0.0, 0.0, -1.0);
+    let lookfrom: Vec3 = Vec3::new(13.0, 2.5, 3.0);
+    let lookat: Vec3 = Vec3::new(0.0, 1.0, 0.0);
+    let vup: Vec3 = Vec3::new(0.0, 1.0, 0.0);
+    let vfov: f32 = 20.0;
+    let aspect: f32 = nx as f32 / ny as f32;
+    let aperture: f32 = 0.1;
     let dist_to_focus: f32 = (lookfrom - lookat).length();
-    let aperture: f32 = 1.0;
-    let cam = Camera::new(
-        lookfrom,
-        lookat,
-        Vec3::new(0.0, 1.0, 0.0),
-        20.0,
-        nx as f32 / ny as f32,
-        aperture,
-        dist_to_focus,
-    );
+    let cam = Camera::new(lookfrom, lookat, vup, vfov, aspect, aperture, dist_to_focus);
 
     for j in (0..ny).rev() {
         for i in 0..nx {
