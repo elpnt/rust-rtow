@@ -13,6 +13,16 @@ pub struct Sphere {
     pub material: Arc<Material>,
 }
 
+impl Sphere {
+    pub fn new(center: Vec3, radius: f32, material: Arc<Material>) -> Self {
+        Sphere {
+            center,
+            radius,
+            material,
+        }
+    }
+}
+
 impl Hitable for Sphere {
     fn hit(&self, r: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         let oc: Vec3 = r.origin - self.center;

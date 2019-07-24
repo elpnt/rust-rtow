@@ -16,6 +16,12 @@ pub struct Lambertian {
     pub albedo: Vec3,
 }
 
+impl Lambertian {
+    pub fn new(albedo: Vec3) -> Self {
+        Lambertian { albedo }
+    }
+}
+
 impl Material for Lambertian {
     fn scatter(&self, _r_in: &Ray, rec: &HitRecord) -> Option<ScatterRecord> {
         let target: Vec3 = rec.p + rec.normal + random_in_unit_sphere();
@@ -35,6 +41,12 @@ impl Material for Lambertian {
 pub struct Metal {
     pub albedo: Vec3,
     pub fuzz: f32,
+}
+
+impl Metal {
+    pub fn new(albedo: Vec3, fuzz: f32) -> Self {
+        Metal { albedo, fuzz }
+    }
 }
 
 impl Material for Metal {
@@ -71,6 +83,77 @@ fn random_in_unit_sphere() -> Vec3 {
     p
 }
 
-fn reflect(v: &Vec3, normal: &Vec3) -> Vec3 {
-    *v - 2.0 * v.dot(normal) * *normal
+fn reflect(v: &Vec3, n: &Vec3) -> Vec3 {
+    *v - 2.0 * v.dot(n) * *n
+}
+
+pub struct Dielectric {
+    pub refract_idx: f32,
+}
+
+impl Dielectric {
+    pub fn new(refract_idx: f32) -> Self {
+        Dielectric { refract_idx }
+    }
+}
+
+impl Material for Dielectric {
+    fn scatter(&self, r_in: &Ray, rec: &HitRecord) -> Option<ScatterRecord> {
+        let reflected: Vec3 = reflect(&r_in.direction, &rec.normal);
+        let attenuation = Vec3::new(1.0, 1.0, 1.0);
+
+        let outward_normal: Vec3;
+        let ni_over_nt: f32;
+        let cosine: f32;
+        let reflect_prob: f32;
+
+        if r_in.direction.dot(&rec.normal) > 0.0 {
+            outward_normal = -rec.normal;
+            ni_over_nt = self.refract_idx;
+            cosine = self.refract_idx * r_in.direction.dot(&rec.normal) / r_in.direction.length();
+        } else {
+            outward_normal = rec.normal;
+            ni_over_nt = 1.0 / self.refract_idx;
+            cosine = -r_in.direction.dot(&rec.normal) / r_in.direction.length();
+        }
+
+        match refract(&r_in.direction, &outward_normal, ni_over_nt) {
+            Some(refracted) => {
+                reflect_prob = schlick(cosine, self.refract_idx);
+                if rand::random::<f32>() > reflect_prob {
+                    Some(ScatterRecord {
+                        attenuation,
+                        scattered: Ray::new(rec.p, refracted),
+                    })
+                } else {
+                    Some(ScatterRecord {
+                        attenuation,
+                        scattered: Ray::new(rec.p, reflected),
+                    })
+                }
+            }
+            None => Some(ScatterRecord {
+                attenuation,
+                scattered: Ray::new(rec.p, reflected),
+            }),
+        }
+    }
+}
+
+fn refract(v: &Vec3, n: &Vec3, ni_over_nt: f32) -> Option<Vec3> {
+    let uv: Vec3 = v.unit_vector();
+    let dt: f32 = uv.dot(&n);
+    let discriminant: f32 = 1.0 - ni_over_nt * ni_over_nt * (1.0 - dt * dt);
+    if discriminant > 0.0 {
+        let refracted: Vec3 = ni_over_nt * (uv - *n * dt) - *n * discriminant.sqrt();
+        Some(refracted)
+    } else {
+        None
+    }
+}
+
+fn schlick(cosine: f32, refract_idx: f32) -> f32 {
+    let mut r0: f32 = (1.0 - refract_idx) / (1.0 + refract_idx);
+    r0 = r0 * r0;
+    r0 + (1.0 - r0) * ((1.0 - cosine).powi(5))
 }

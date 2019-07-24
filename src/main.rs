@@ -42,9 +42,9 @@ fn color(r: &Ray, world: &HitableList, depth: u32) -> Vec3 {
 fn main() {
     let nx: u32 = 800;
     let ny: u32 = 400;
-    let ns: u32 = 100; // number of samples inside each pixel
+    let ns: u32 = 50; // number of samples inside each pixel
 
-    let mut f = BufWriter::new(fs::File::create("image/ch8-material-fuzziness.ppm").unwrap());
+    let mut f = BufWriter::new(fs::File::create("image/ch8-dielectric.ppm").unwrap());
     f.write_all(format!("P3\n{} {}\n255\n", nx, ny).as_bytes())
         .unwrap();
 
@@ -74,10 +74,12 @@ fn main() {
         Arc::new(Sphere {
             center: Vec3::new(-1.0, 0.0, -1.0),
             radius: 0.5,
-            material: Arc::new(Metal {
-                albedo: Vec3::new(0.8, 0.8, 0.8),
-                fuzz: 1.0,
-            }),
+            material: Arc::new(Dielectric { refract_idx: 1.5 }),
+        }),
+        Arc::new(Sphere {
+            center: Vec3::new(-1.0, 0.0, -1.0),
+            radius: -0.45,
+            material: Arc::new(Dielectric { refract_idx: 1.5 }),
         }),
     ];
     let world = HitableList { hitables };
