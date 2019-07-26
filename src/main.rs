@@ -42,14 +42,14 @@ fn color(r: &Ray, world: &HitableList, depth: u32) -> Vec3 {
 fn main() {
     let nx: u32 = 640;
     let ny: u32 = 480;
-    let ns: u32 = 40; // number of samples inside each pixel
+    let ns: u32 = 50; // number of samples inside each pixel
 
     // Objects setup
     let world = scene::random_scene();
 
     // Camera setup
     let lookfrom: Vec3 = Vec3::new(13.0, 2.5, 3.0);
-    let lookat: Vec3 = Vec3::new(0.0, 1.0, 0.0);
+    let lookat: Vec3 = Vec3::new(0.0, 0.5, 0.0);
     let vup: Vec3 = Vec3::new(0.0, 1.0, 0.0);
     let vfov: f32 = 20.0;
     let aspect: f32 = nx as f32 / ny as f32;
@@ -60,7 +60,7 @@ fn main() {
     // Parallell process
     let start = Instant::now();
 
-    let mut f = BufWriter::new(fs::File::create("image/comparison/parallel.ppm").unwrap());
+    let mut f = BufWriter::new(fs::File::create("result.ppm").unwrap());
     f.write_all(format!("P3\n{} {}\n255\n", nx, ny).as_bytes())
         .unwrap();
 
