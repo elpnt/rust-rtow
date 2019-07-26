@@ -1,4 +1,5 @@
 use rand;
+use rayon::prelude::*;
 use std::fs;
 use std::io::{BufWriter, Write};
 
@@ -41,11 +42,6 @@ fn main() {
     let nx: u32 = 640;
     let ny: u32 = 480;
     let ns: u32 = 40; // number of samples inside each pixel
-
-    let mut f = BufWriter::new(fs::File::create("image/ch12-random-spheres.ppm").unwrap());
-    f.write_all(format!("P3\n{} {}\n255\n", nx, ny).as_bytes())
-        .unwrap();
-
     // Objects setup
     let world = scene::random_scene();
 
@@ -58,6 +54,11 @@ fn main() {
     let aperture: f32 = 0.1;
     let dist_to_focus: f32 = (lookfrom - lookat).length();
     let cam = Camera::new(lookfrom, lookat, vup, vfov, aspect, aperture, dist_to_focus);
+
+    // Render
+    let mut f = BufWriter::new(fs::File::create("image/parallel/").unwrap());
+    f.write_all(format!("P3\n{} {}\n255\n", nx, ny).as_bytes())
+        .unwrap();
 
     for j in (0..ny).rev() {
         for i in 0..nx {
