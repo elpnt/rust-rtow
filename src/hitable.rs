@@ -10,6 +10,7 @@ pub struct HitRecord<'a> {
     pub material: &'a dyn Material,
 }
 
+// `Hitalbe` trait needs `Send` and `Sync` for `rayon` parallel processing.
 pub trait Hitable: Send + Sync {
     fn hit(&self, r: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord>;
 }
