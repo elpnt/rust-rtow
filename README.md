@@ -8,4 +8,4 @@ $ cargo run
 ```
 
 ### output example
-![output](./result.png)
+![output](./output/result.png)
