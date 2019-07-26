@@ -42,7 +42,7 @@ fn color(r: &Ray, world: &HitableList, depth: u32) -> Vec3 {
 fn main() {
     let nx: u32 = 640;
     let ny: u32 = 480;
-    let ns: u32 = 50; // number of samples inside each pixel
+    let ns: u32 = 100; // number of samples inside each pixel
 
     // Objects setup
     let world = scene::random_scene();
@@ -103,5 +103,5 @@ fn main() {
     }
 
     let duration = start.elapsed();
-    println!("Time elapsed in parallel process  : {:?}", duration);
+    println!("Time elapsed in parallel process is: {:?}", duration);
 }
