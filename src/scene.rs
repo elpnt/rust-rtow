@@ -19,8 +19,8 @@ pub fn random_scene() -> HitableList {
     }));
 
     // a lot of small spheres
-    for a in -11..11 {
-        for b in -11..11 {
+    for a in -10..10 {
+        for b in -10..10 {
             let choose_mat: f32 = rng.gen();
             let center: Vec3 = Vec3::new(
                 a as f32 + 0.9 * rng.gen::<f32>(),
@@ -29,7 +29,7 @@ pub fn random_scene() -> HitableList {
             );
 
             if (center - Vec3::new(4.0, 0.2, 0.0)).length() > 0.9 {
-                if choose_mat < 0.4 {
+                if choose_mat < 0.5 {
                     // diffuse
                     hitables.push(Arc::new(Sphere {
                         center,
@@ -40,7 +40,7 @@ pub fn random_scene() -> HitableList {
                             rng.gen::<f32>() * rng.gen::<f32>(),
                         )),
                     }));
-                } else if choose_mat < 0.8 {
+                } else if choose_mat < 0.9 {
                     // metal
                     hitables.push(Arc::new(Sphere {
                         center,
