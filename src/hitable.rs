@@ -10,6 +10,6 @@ pub struct HitRecord<'a> {
     pub material: &'a dyn Material,
 }
 
-pub trait Hitable {
+pub trait Hitable: Send + Sync {
     fn hit(&self, r: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord>;
 }
