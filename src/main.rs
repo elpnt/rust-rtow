@@ -57,38 +57,6 @@ fn main() {
     let dist_to_focus: f32 = (lookfrom - lookat).length();
     let cam = Camera::new(lookfrom, lookat, vup, vfov, aspect, aperture, dist_to_focus);
 
-    // Sequential process
-
-    let start = Instant::now();
-
-    let mut f = BufWriter::new(fs::File::create("./image/comparison/sequential.ppm").unwrap());
-    f.write_all(format!("P3\n{} {}\n255\n", nx, ny).as_bytes())
-        .unwrap();
-
-    for j in (0..ny).rev() {
-        for i in 0..nx {
-            let mut col = Vec3::new(0.0, 0.0, 0.0);
-            for _ in 0..ns {
-                let u = (i as f32 + rand::random::<f32>()) / nx as f32;
-                let v = (j as f32 + rand::random::<f32>()) / ny as f32;
-                let r: Ray = cam.get_ray(u, v);
-                col += color(&r, &world, 0);
-            }
-
-            col /= ns as f32;
-            col = Vec3::new(col.x.sqrt(), col.y.sqrt(), col.z.sqrt());
-            let ir = (255.99 * col.x) as i32;
-            let ig = (255.99 * col.y) as i32;
-            let ib = (255.99 * col.z) as i32;
-
-            f.write(format!("{} {} {}\n", ir, ig, ib).as_bytes())
-                .unwrap();
-        }
-    }
-
-    let duration = start.elapsed();
-    println!("Time elapsed in sequential process: {:?}", duration);
-
     // Parallell process
     let start = Instant::now();
 
