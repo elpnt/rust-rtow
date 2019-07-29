@@ -7,55 +7,6 @@ use crate::vec3::Vec3;
 use rand::prelude::*;
 use std::sync::Arc;
 
-pub fn room_scene() -> HitableList {
-    let hitables: Vec<Arc<Hitable>> = vec![
-        // Left wall
-        Arc::new(Sphere {
-            center: Vec3::new(1e5 + 1.0, 40.8, 81.6),
-            radius: 1e5,
-            material: Arc::new(Lambertian::new(0.75, 0.25, 0.25)),
-        }),
-        // Right wall
-        Arc::new(Sphere {
-            center: Vec3::new(-1e5 + 99.0, 40.8, 81.6),
-            radius: 1e5,
-            material: Arc::new(Lambertian::new(0.25, 0.25, 0.75)),
-        }),
-        // Back wall
-        Arc::new(Sphere {
-            center: Vec3::new(50.0, 40.8, 1e5),
-            radius: 1e5,
-            material: Arc::new(Lambertian::new(0.75, 0.75, 0.75)),
-        }),
-        // Front wall
-        // Arc::new(Sphere {
-        //     center: Vec3::new(50.0, 40.8, -1e5 + 170.0),
-        //     radius: 1e5,
-        //     material: Arc::new(Lambertian::new(0.0, 0.0, 0.0)),
-        // }),
-        // Floor
-        // Arc::new(Sphere {
-        //     center: Vec3::new(50.0, 1e5, 81.6),
-        //     radius: 1e5,
-        //     material: Arc::new(Lambertian::new(0.75, 0.75, 0.75)),
-        // }),
-        // Ceil
-        Arc::new(Sphere {
-            center: Vec3::new(50.0, -1e5 + 81.6, 81.6),
-            radius: 1e5,
-            material: Arc::new(Lambertian::new(0.75, 0.75, 0.75)),
-        }),
-        // small sphere
-        Arc::new(Sphere {
-            center: Vec3::new(50.0, 50.0, -10.0),
-            radius: 25.0,
-            material: Arc::new(Lambertian::new(1.0, 0., 0.)),
-        }),
-    ];
-
-    HitableList { hitables }
-}
-
 pub fn random_scene() -> HitableList {
     let mut hitables: Vec<Arc<Hitable>> = vec![];
     let mut rng = rand::thread_rng();
