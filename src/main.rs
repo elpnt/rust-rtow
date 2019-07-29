@@ -40,20 +40,20 @@ fn color(r: &Ray, world: &HitableList, depth: u32) -> Vec3 {
 }
 
 fn main() {
-    let nx: u32 = 640;
-    let ny: u32 = 480;
-    let ns: u32 = 100; // number of samples inside each pixel
+    let nx: u32 = 400;
+    let ny: u32 = 300;
+    let ns: u32 = 10; // number of samples inside each pixel
 
     // Objects setup
-    let world = scene::random_scene();
+    let world = scene::room_scene();
 
     // Camera setup
-    let lookfrom: Vec3 = Vec3::new(13.0, 2.5, 3.0);
-    let lookat: Vec3 = Vec3::new(0.0, 0.5, 0.0);
+    let lookfrom: Vec3 = Vec3::new(50.0, 52.0, 300.0);
+    let lookat: Vec3 = lookfrom + Vec3::new(0.0, -0.043, -1.0);
     let vup: Vec3 = Vec3::new(0.0, 1.0, 0.0);
-    let vfov: f32 = 20.0;
+    let vfov: f32 = 30.0;
     let aspect: f32 = nx as f32 / ny as f32;
-    let aperture: f32 = 0.1;
+    let aperture: f32 = 0.0;
     let dist_to_focus: f32 = (lookfrom - lookat).length();
     let cam = Camera::new(lookfrom, lookat, vup, vfov, aspect, aperture, dist_to_focus);
 
