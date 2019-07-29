@@ -46,9 +46,11 @@ pub fn random_scene() -> HitableList {
                         center,
                         radius: 0.2,
                         material: Arc::new(Metal::new(
-                            0.5 * (1.0 + rng.gen::<f32>()),
-                            0.5 * (1.0 + rng.gen::<f32>()),
-                            0.5 * (1.0 + rng.gen::<f32>()),
+                            (
+                                0.5 * (1.0 + rng.gen::<f32>()),
+                                0.5 * (1.0 + rng.gen::<f32>()),
+                                0.5 * (1.0 + rng.gen::<f32>()),
+                            ),
                             0.5 * rng.gen::<f32>(),
                         )),
                     }));
@@ -78,7 +80,7 @@ pub fn random_scene() -> HitableList {
     hitables.push(Arc::new(Sphere {
         center: Vec3::new(4.0, 1.0, 0.0),
         radius: 1.0,
-        material: Arc::new(Metal::new(0.7, 0.6, 0.5, 0.0)),
+        material: Arc::new(Metal::new((0.7, 0.6, 0.5), 0.0)),
     }));
 
     HitableList { hitables }

@@ -46,9 +46,10 @@ pub struct Metal {
 }
 
 impl Metal {
-    pub fn new(x: f32, y: f32, z: f32, fuzz: f32) -> Self {
+    // pub fn new(x: f32, y: f32, z: f32, fuzz: f32) -> Self {
+    pub fn new(v: (f32, f32, f32), fuzz: f32) -> Self {
         Metal {
-            albedo: Vec3::new(x, y, z),
+            albedo: Vec3::new(v.0, v.1, v.2),
             fuzz,
         }
     }
@@ -57,7 +58,7 @@ impl Metal {
 impl Material for Metal {
     fn scatter(&self, r_in: &Ray, rec: &HitRecord) -> Option<ScatterRecord> {
         let f: f32 = if self.fuzz < 1.0 { self.fuzz } else { 1.0 };
-        let reflected: Vec3 = reflect(&r_in.direction.unit_vector(), &rec.normal);
+        let reflected: Vec3 = reflect(r_in.direction.unit_vector(), rec.normal);
         let scattered = Ray {
             origin: rec.p,
             direction: reflected + f * random_in_unit_sphere(),
@@ -88,8 +89,8 @@ fn random_in_unit_sphere() -> Vec3 {
     p
 }
 
-fn reflect(v: &Vec3, n: &Vec3) -> Vec3 {
-    *v - 2.0 * v.dot(n) * *n
+fn reflect(v: Vec3, n: Vec3) -> Vec3 {
+    v - 2.0 * v.dot(&n) * n
 }
 
 pub struct Dielectric {
@@ -104,7 +105,7 @@ impl Dielectric {
 
 impl Material for Dielectric {
     fn scatter(&self, r_in: &Ray, rec: &HitRecord) -> Option<ScatterRecord> {
-        let reflected: Vec3 = reflect(&r_in.direction, &rec.normal);
+        let reflected: Vec3 = reflect(r_in.direction, rec.normal);
         let attenuation = Vec3::new(1.0, 1.0, 1.0);
 
         let outward_normal: Vec3;
